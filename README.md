@@ -15,36 +15,36 @@ Warning: package requires GeoPandas to be installed, which can be problematic on
 ~~~
 docker run -d -it —name final —mount type=bind,source="$(pwd)"/target,target=/app kadmus_map
 ~~~
-target/ - директория с файлами TIF и TFW  
-[Ссылка на Docker](https://disk.yandex.ru/d/32I0DB2AxfSvDw)  
+target/ - TIF and TFW files directory  
+[Docker link](https://disk.yandex.ru/d/32I0DB2AxfSvDw)  
 
 
 ## Description
 
 ### Shapefile
 [Documentation](https://github.com/Denikozub/kadmus-dev#build-shapefile)  
-Программа строит шейпфайл по результатам работы нейросети - NPY маскам изображений и соответствующим TFW файлам мира.
-Имеется возможность фильтровать полученные результаты, сглаживать итоговые линии и выбирать систему координат.  
+The program builds a shapefile based on the results of the neural network - NPY image masks and corresponding TFW files of the world.
+It is possible to filter the results, smooth the final lines and choose the coordinate system.  
 
-Фильтрация:
-* По ширине
-* По расстоянию между тропами
-* По размерам bounding box
-* По площади  
+Filtration:
+* By width
+* According to the distance between trails
+* According to the size of the bounding box
+* By area  
 
-Дополнительно имеется возможность эффективно (6 секунд на тестовых данных) проверять пересечения со зданиями Москвы для уменьшения вероятности ошибки. Данные скачаны из открытого источника [OpenStreetMap](www.openstreetmap.org), обработаны и сжаты.
+Additionally, it is possible to efficiently (6 seconds on test data) check intersections with buildings in Moscow to reduce the likelihood of errors. Data downloaded from open source [OpenStreetMap](www.openstreetmap.org), processed and compressed.
 
 ### Visualization
 [Documentation](https://github.com/Denikozub/kadmus-dev#visualize)  
-Реализована возможность нанесение найденных троп на интерактивную карту OpenStreetMap с помощью сервиса с открытым исходным кодом [Leaflet](https://leafletjs.com/). Данное решение не требует платного API таких сервисов, как Google Maps или Yandex Maps, и может быть использовано в коммерческих проектах.
+Implemented the ability to plot found trails on an interactive map OpenStreetMap using the open source service [Leaflet](https://leafletjs.com/). This solution does not require paid API of such services as Google Maps or Yandex Maps and can be used in commercial projects.
 
 ### Iterative Makrup
 [Documentation](https://github.com/Denikozub/kadmus-dev#preliminary-markup)  
-Разработан и реализован итеративный подход к разметке данных с применением глубокого обучения:  
-1. Разметить часть данных вручную
-2. Обучить нейросеть на размеченных данных
-3. Применить нейросеть для помощи при разметке следующей части данных
-4. Перейти на шаг 1  
+An iterative approach to data labeling using deep learning has been developed and implemented:
+1. Mark up some data manually
+2. Train the neural network on labeled data
+3. Apply a neural network to help label the next piece of data
+4. Go to step 1
 
 
 ## Documentation
@@ -57,24 +57,24 @@ python visual_build/main.py
 
 ### Preliminary Markup
 
-Запуск из командной строки:  
+Run using command prompt
 ~~~
 python preliminary_markup/pipeline.py get_mask img.tif
 ~~~
-Возвращает маску, где красным цветом на белом фоне выделены области, которые нашла нейросеть.  
-Маска сохраняется в img_mask.tif  
+Returns a mask where the areas found by the neural network are highlighted in red on a white background.
+The mask is stored in img_mask.tif  
 
-Остается стереть лишние красные метки, затем сконвертировать маску в .npy; команда для конвертации:
+It remains to erase the extra red marks, then convert the mask to .npy; command to convert:
 ~~~
 python preliminary_markup/pipeline.py get_npy img_mask.tif
 ~~~
-Красный цвет заменяет на белый, все остальное - на черный.  
+Red is replaced by white, everything else is black.  
 
-Команда чтобы посмотреть результат наложения маски и изображения:
+Command to view the result of applying a mask and an image:
 ~~~
 python preliminary_markup/pipeline.py blend image.tif mask.tif  
 ~~~
-Для каждого следующего этапа обучения нейросети необходимо обновлять pipeline.
+For each next stage of training the neural network, it is necessary to update the pipeline.
 
 
 ### Build shapefile
